@@ -1,9 +1,7 @@
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
-import java.util.Arrays;
 import java.io.BufferedReader;
-import java.io.DataInputStream;
 
 public class Client {
 	Socket client;
@@ -134,7 +132,6 @@ public class Client {
 			dout.flush();
 			in.close();
 			dout.close();
-			System.out.println("Closing client");
 			client.close();
 		} catch(Exception e) {
 			System.out.println(e);
