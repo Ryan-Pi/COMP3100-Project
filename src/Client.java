@@ -40,23 +40,28 @@ public class Client {
 					String[] str2 = str.split(" ",7);
 					//str2[2] = jobid
 					//str[4],[5],[6] = cores, disk, memory
+					System.out.println("GETTING");
 					String gets = "GETS " + "Capable " + str2[4] + " " + str2[5] + " " + str2[6] + "\n";
 					dout.write(gets.getBytes());
 					dout.flush();
 					
-					String[] str3 = str.split(" ", 3); //str3[1] = no. servers
-					int serverNo = Integer.valueOf(str3[1]);
 					String[][] servers;
 					int serverChoice = 0;
 					int cores = 0;
+					System.out.println("WAITING");
 					while(!str.contains("DATA")){
 						str = in.readLine();
 					}
+					String[] str3 = str.split(" ", 3); //str3[1] = no. servers
+					int serverNo = Integer.valueOf(str3[1]);
+					System.out.println("ServerNO = " + serverNo);
 					dout.write(("OK\n").getBytes());
 					dout.flush();
+					System.out.println("SERVERS");
 					servers = new String[serverNo][9];
 						for(int i = 0; i < serverNo; i++){
 							str = in.readLine();
+							servers[i] = str.split(" ",7);
 							if(Integer.valueOf(servers[i][4]) > cores){
 								cores = Integer.valueOf(servers[i][4]);
 								System.out.println(servers[i][0] + " " + servers[i][4]);
@@ -65,26 +70,13 @@ public class Client {
 							// str[0] = serv type, str[1] = serv id, serv[4,5,6] = core, disk, mem
 							System.out.println(Arrays.toString(servers[i]));
 						}
-					if(first){
-					serverType = servers[serverChoice][0];
-					first = false;
-						if(atlYes==true){
-							atl = true;
-						}
-					}
-					if(atl){
-						for(int i = 0; i < servers.length; i ++){
-							cores = 0;
-							if(servers[i][0].equals(serverType) && Integer.valueOf(servers[i][4]) > cores){	
-								serverChoice = i;
-								System.out.println("ATL " + servers[i][0] + " " + servers[i][4]);
-							}
-						}
-					}
-					
+					dout.write(("OK\n").getBytes());
+					dout.flush();
+					System.out.println("LOOPER");
 					while(!str.equals(".")){
 						str = in.readLine();
 					}
+					System.out.println("LOOP");
 					dout.write(("OK\n").getBytes());
 					dout.flush();
 					//str2[2] == job id
@@ -98,6 +90,7 @@ public class Client {
 					dout.flush();
 					str = in.readLine();
 				}
+				
 				if(str.contains("JCPL")){
 					dout.write(("REDY\n").getBytes());
 					dout.flush();
