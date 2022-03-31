@@ -12,6 +12,7 @@ public class Client {
 	String[][] largestServers;
 	boolean first = true;
 	int lrr = 0;
+	int max = 0;
 	
 	public Client(int port) {
 		try {
@@ -23,6 +24,7 @@ public class Client {
 			while(!str.equals("OK")) {
 			str = in.readLine();
 			}
+			str = "";
 			dout.write(("AUTH vm\n").getBytes());
 			dout.flush();
 			while(!str.equals("OK")) {
@@ -49,6 +51,7 @@ public class Client {
 			num++;
 			}
 		}
+		max = num;
 	}
 	
 	public void schedule() {
@@ -90,9 +93,10 @@ public class Client {
 				str = in.readLine();
 			}
 			//str2[2] == job id
-			String schd = "SCHD " + str2[2] + " " + largestServers[lrr][0] + " " + largestServers[lrr][1] + "\n";
+			//String schd = "SCHD " + str2[2] + " " + largestServers[lrr][0] + " " + largestServers[lrr][1] + "\n";
+			String schd = "SCHD " + str2[2] + " " + serverType + " " + lrr + "\n";
 			lrr++;
-			if(lrr>=largestServers.length) {
+			if(lrr>=max) {
 				lrr = 0;
 			}
 			dout.write(schd.getBytes());
