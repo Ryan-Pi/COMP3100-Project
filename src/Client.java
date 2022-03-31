@@ -9,7 +9,6 @@ public class Client {
 	DataOutputStream dout;
 	String str = new String();
 	String serverType = new String();
-	String[][] largestServers;
 	boolean first = true;
 	int lrr = 0;
 	int max = 0;
@@ -19,19 +18,11 @@ public class Client {
 			client = new Socket("localhost",port);
 			in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 			dout = new DataOutputStream(client.getOutputStream());
-			dout.write(("HELO\n").getBytes());
-			dout.flush();
-			while(!str.equals("OK")) {
-			str = in.readLine();
-			}
-			str = "";
-			dout.write(("AUTH vm\n").getBytes());
-			dout.flush();
-			while(!str.equals("OK")) {
-				str = in.readLine();
-			}
-			dout.write(("REDY\n").getBytes());
-			dout.flush();
+			write("HELO\n");
+			waitFor("OK");
+			write("AUTH vm\n");
+			waitFor("OK");
+			write("REDY\n");
 			message();
 			quit();
 		} catch(Exception e) {
@@ -39,75 +30,59 @@ public class Client {
 		}
 	}
 	
-	public void largestServers(String[][] servers, int count) {
-		//creates an array consisting of servers with the largest serverType and their ids
-		largestServers = new String[count][2];
-		int num = 0;
-		for(int i = 0; i < servers.length; i++) {
-			if(servers[i][0].equals(serverType)) {
-			// str[0] = serv type, str[1] = serv id, serv[4,5,6] = core, disk, memory
-			largestServers[num][0] = servers[i][0];
-			largestServers[num][1] = servers[i][1];
-			num++;
-			}
-		}
-		max = num;
-	}
-	
 	public void schedule() {
 		try {
-		while(str.contains("JOBN")){
-			String[] str2 = str.split(" ",7);
-			//str2[2] = jobid, str[4],[5],[6] = cores, disk, memory
-			String gets = "GETS " + "Capable " + str2[4] + " " + str2[5] + " " + str2[6] + "\n";
-			dout.write(gets.getBytes());
-			dout.flush();
-			int cores = 0;
-			while(!str.contains("DATA")){
-				str = in.readLine();
-			}
-			String[] str3 = str.split(" ", 3); //str3[1] = no. servers
-			int serverNo = Integer.valueOf(str3[1]);
-			dout.write(("OK\n").getBytes());
-			dout.flush();
-			if(first) {
-				String[][] servers;
-				int count = 0;
-				servers = new String[serverNo][9];
-				for(int i = 0; i < serverNo; i++){
+			while(str.contains("JOBN")){
+				String[] str2 = str.split(" ",7);
+				//str2[2] = jobid, str[4],[5],[6] = cores, disk, memory
+				write("GETS " + "Capable " + str2[4] + " " + str2[5] + " " + str2[6] + "\n");
+				while(!str.contains("DATA")){
 					str = in.readLine();
-					servers[i] = str.split(" ",7);
-						if(Integer.valueOf(servers[i][4]) > cores){
-							serverType = servers[i][0];
-							count = 0;
-							cores = Integer.valueOf(servers[i][4]);
-						}
-					count++;
 				}
-				largestServers(servers, count);
-				first = false;
-			}
-			dout.write(("OK\n").getBytes());
-			dout.flush();
-			while(!str.equals(".")){
+				write("OK\n");
+				if(first) {
+					findLargest();
+					first = false;
+				}
+				write("OK\n");
+				waitFor(".");
+				write("SCHD " + str2[2] + " " + serverType + " " + lrr + "\n");
+				//str2[2] == job id
+				lrr++;
+				if(lrr>=max) {
+					lrr = 0;
+				}
+				waitFor("OK");
+				write("REDY\n");
 				str = in.readLine();
 			}
-			//str2[2] == job id
-			//String schd = "SCHD " + str2[2] + " " + largestServers[lrr][0] + " " + largestServers[lrr][1] + "\n";
-			String schd = "SCHD " + str2[2] + " " + serverType + " " + lrr + "\n";
-			lrr++;
-			if(lrr>=max) {
-				lrr = 0;
-			}
-			dout.write(schd.getBytes());
-			dout.flush();
-			while(!str.equals("OK")){
-				str = in.readLine();
-			}
-			dout.write(("REDY\n").getBytes());
-			dout.flush();
-			str = in.readLine();
+		} catch(Exception e) {
+			System.out.println(e);
 		}
+	}
+	
+	public void findLargest() {
+		try {
+			String[] str3 = str.split(" ", 3);
+			int serverNo = Integer.valueOf(str3[1]);
+			//str3[1] = no. servers
+			String[][] servers;
+			int count = 0;
+			int cores = 0;
+			servers = new String[serverNo][9];
+			for(int i = 0; i < serverNo; i++){
+				str = in.readLine();
+				servers[i] = str.split(" ",7);
+					if(Integer.valueOf(servers[i][4]) > cores){
+						serverType = servers[i][0];
+						count = 0;
+						cores = Integer.valueOf(servers[i][4]);
+					}
+					if(servers[i][0].equals(serverType)) {
+						count++;
+					}
+			}
+			max = count;
 		} catch(Exception e) {
 			System.out.println(e);
 		}
@@ -118,12 +93,11 @@ public class Client {
 			while(!str.equals("NONE")) {
 				if(str.contains("JOBN")) {
 					schedule();
-			}
-			if(str.contains("JCPL")){
-				dout.write(("REDY\n").getBytes());
-				dout.flush();
-			}
-			str = in.readLine();
+				}
+				if(str.contains("JCPL")){
+					write("REDY\n");
+				}
+				str = in.readLine();
 			}	
 		} catch(Exception e) {
 			System.out.println(e);
@@ -132,8 +106,7 @@ public class Client {
 	
 	public void quit() {
 		try {
-			dout.write(("QUIT\n").getBytes());
-			dout.flush();
+			write("QUIT\n");
 			in.close();
 			dout.close();
 			client.close();
@@ -142,7 +115,28 @@ public class Client {
 		}
 	}
 	
+	public void write(String n) {
+		try {
+			dout.write((n).getBytes());
+			dout.flush();
+		} catch(Exception e) {
+			System.out.println(e);
+		}
+	}
 	
+	public void waitFor(String n) {
+		//clears string, as otherwise the client may send another message too quickly due to 
+		//having OK in str while waiting for another OK message
+		//mainly created to ensure that the initial handshake between client and server occurs properly
+		try {
+			while(!str.equals(n)) {
+				str = in.readLine();
+			}
+			str = "";
+		} catch(Exception e) {
+			System.out.println(e);
+		}
+	}
 
 	public static void main(String[] args) {
 		Client client = new Client(50000);
