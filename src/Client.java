@@ -33,9 +33,9 @@ public class Client {
 	public void schedule() {
 		try {
 			while(str.contains("JOBN")){
-				String[] str2 = str.split(" ",7);
-				//str2[2] = jobid, str[4],[5],[6] = cores, disk, memory
-				write("GETS " + "Capable " + str2[4] + " " + str2[5] + " " + str2[6] + "\n");
+				String[] jobStr = str.split(" ",7);
+				//jobStr[2] = jobid, str[4],[5],[6] = cores, disk, memory
+				write("GETS " + "Capable " + jobStr[4] + " " + jobStr[5] + " " + jobStr[6] + "\n");
 				while(!str.contains("DATA")){
 					str = in.readLine();
 				}
@@ -46,7 +46,7 @@ public class Client {
 				}
 				write("OK\n");
 				waitFor(".");
-				write("SCHD " + str2[2] + " " + serverType + " " + lrr + "\n");
+				write("SCHD " + jobStr[2] + " " + serverType + " " + lrr + "\n");
 				//str2[2] == job id
 				lrr++;
 				if(lrr>=max) {
@@ -63,9 +63,9 @@ public class Client {
 	
 	public void findLargest() {
 		try {
-			String[] str3 = str.split(" ", 3);
-			int serverNo = Integer.valueOf(str3[1]);
-			//str3[1] = no. servers
+			String[] serverStr = str.split(" ", 3);
+			int serverNo = Integer.valueOf(serverStr[1]);
+			//serverStr[1] = number of servers
 			String[][] servers;
 			int count = 0;
 			int cores = 0;
