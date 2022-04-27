@@ -7,30 +7,32 @@ public class Client {
 	Socket client;
 	BufferedReader in;
 	DataOutputStream dout;
+	String algo = new String();
 	String str = new String();
 	String serverType = new String();
 	boolean first = true;
-	int lrr = 0;
+	int serverId = 0;
 	int max = 0;
 	
-	public Client(int port) {
+	public Client(int port, String algorithm) {
 		try {
 			client = new Socket("localhost",port);
 			in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 			dout = new DataOutputStream(client.getOutputStream());
+			algo = algorithm;
 			write("HELO\n");
 			waitFor("OK");
 			write("AUTH vm\n");
 			waitFor("OK");
 			write("REDY\n");
-			message();
+			message(algo);
 			quit();
 		} catch(Exception e) {
 			System.out.println(e);
 		}
 	}
 	
-	public void schedule() {
+	public void schedule(String algorithm) {
 		try {
 			while(str.contains("JOBN")){
 				String[] jobStr = str.split(" ",7);
@@ -40,17 +42,24 @@ public class Client {
 					str = in.readLine();
 				}
 				write("OK\n");
-				if(first) {
-					findLargest();
-					first = false;
+				if(algorithm.equals("lrr")) {
+					if(first) {
+						findLargest();
+						first = false;
+					}
+				}
+				if(algorithm.equals("fc")) {
+					findFirst();
 				}
 				write("OK\n");
 				waitFor(".");
-				write("SCHD " + jobStr[2] + " " + serverType + " " + lrr + "\n");
+				write("SCHD " + jobStr[2] + " " + serverType + " " + serverId + "\n");
 				//str2[2] == job id
-				lrr++;
-				if(lrr>=max) {
-					lrr = 0;
+				if(algorithm.equals("lrr")) {
+					serverId++;
+					if(serverId>=max) {
+						serverId = 0;
+					}
 				}
 				waitFor("OK");
 				write("REDY\n");
@@ -88,11 +97,28 @@ public class Client {
 		}
 	}
 	
-	public void message() {
+	public void findFirst() {
+		try {
+			String[] serverStr = str.split(" ", 3);
+			int serverNo = Integer.valueOf(serverStr[1]);
+			//serverStr[1] = number of servers
+			str = in.readLine();
+			String server[] = str.split(" ",7);
+			serverType = server[0];
+			serverId = Integer.valueOf(server[1]);
+			for(int i = 0; i < serverNo-1; i++){ //serverNo -1 as we just want to get the first server,and this is to clear the input stream
+				str = in.readLine();
+			}
+		} catch(Exception e) {
+			System.out.println(e);
+		}
+	}
+	
+	public void message(String algorithm) {
 		try {
 			while(!str.equals("NONE")) {
 				if(str.contains("JOBN")) {
-					schedule();
+					schedule(algorithm);
 				}
 				if(str.contains("JCPL")){
 					write("REDY\n");
@@ -139,7 +165,13 @@ public class Client {
 	}
 
 	public static void main(String[] args) {
-		Client client = new Client(50000);
+		String algorithm = "lrr";
+		if(args[0].equals("-a")) {
+			if(args[1].equals("fc")) {
+				algorithm = "fc";
+			}
+		}
+		Client client = new Client(50000, algorithm);
 	}
 
 }
