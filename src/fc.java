@@ -23,17 +23,4 @@ public class fc extends Scheduler{
 		write("SCHD " + job.getID() + " " + targetServer.getServerType() + " " + targetServer.getServerID());
 	}
 	
-	public void write(String n) {
-		n = n + "\n";
-		messenger.message(n);
-	}
-	
-	public void read() {
-		str = messenger.read();
-	}
-	
-	public void waitFor(String n) {
-		messenger.waitFor(n);
-	}
-	
 }

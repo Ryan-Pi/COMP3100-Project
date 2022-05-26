@@ -5,7 +5,7 @@ public class newAlgo extends Scheduler{
 		super(messenger);
 	}
 	
-	public Server schedule(Job j) {
+	public void schedule(String j) {
 		
 	}
 

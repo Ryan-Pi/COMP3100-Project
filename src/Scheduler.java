@@ -24,5 +24,17 @@ public abstract class Scheduler {
 		return activeServers;
 	}
 	
-	public abstract void schedule(Job j);
+	public void write(String n) {
+		messenger.message(n);
+	}
+	
+	public void read() {
+		str = messenger.read();
+	}
+	
+	public void waitFor(String n) {
+		messenger.waitFor(n);
+	}
+	
+	public abstract void schedule(String j);
 }

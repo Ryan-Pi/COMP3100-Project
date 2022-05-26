@@ -39,7 +39,7 @@ public class Client {
 //			message(algo);
 //			quit();
 		} catch(Exception e) {
-			System.out.println(e);
+			e.printStackTrace();
 		}
 	}
 	
@@ -187,7 +187,7 @@ public class Client {
 	
 	public void quit() {
 		try {
-			write("QUIT\n");
+			write("QUIT");
 			in.close();
 			dout.close();
 			client.close();
@@ -220,7 +220,6 @@ public class Client {
 //	}
 	
 	public void write(String n) {
-		n = n + "\n";
 		messenger.message(n);
 	}
 	
@@ -249,11 +248,11 @@ public class Client {
 	
 	public void handshake() {
 		//initial handshake between server and client
-		message("HELO");
-		messenger.waitFor("OK");
-		message("AUTH vm");
-		messenger.waitFor("OK");
-		message("REDY");
+		write("HELO");
+		waitFor("OK");
+		write("AUTH client");
+		waitFor("OK");
+		write("REDY");
 	}
 
 	public static void main(String[] args) {
