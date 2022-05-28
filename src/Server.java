@@ -58,5 +58,25 @@ public class Server {
 	public String getServerRunningJobs() {
 		return running;
 	}
+	
+	public int getServerCoresInt() {
+		return Integer.valueOf(cores);
+	}
+
+	public int getServerMemoryInt() {
+		return Integer.valueOf(memory);
+	}
+	
+	public int getServerDiskInt() {
+		return Integer.valueOf(disk);
+	}
+	
+	public int getServerWaitingJobsInt() {
+		return Integer.valueOf(waiting);
+	}
+	
+	public int getServerRunningJobsInt() {
+		return Integer.valueOf(running);
+	}
 
 }

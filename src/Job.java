@@ -40,6 +40,18 @@ public class Job {
 		return Integer.toString(memory);
 	}
 	
+	public int getCoresInt() {
+		return cores;
+	}
+
+	public int getDiskInt() {
+		return disk;
+	}
+
+	public int getMemoryInt() {
+		return memory;
+	}
+	
 	public void setId(int newId) {
 		id = newId;
 	}

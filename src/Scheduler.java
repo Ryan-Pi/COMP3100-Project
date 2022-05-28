@@ -3,11 +3,13 @@ import java.util.ArrayList;
 public abstract class Scheduler {
 	
 	ArrayList<String> serverTypes;
-	ArrayList<Server> activeServers = new ArrayList<Server>();
+	Job job;
 	Server targetServer;
 	Messenger messenger;
 	String str;
+	int numberOfServers;
 	
+	//maybe have schedule() use abstract functions and have subclassses provide functions
 	
 	public Scheduler(Messenger messengerClient) {
 		this.messenger = messengerClient;
@@ -18,12 +20,6 @@ public abstract class Scheduler {
 		serverTypes = serverTypeList;
 	}
 	
-	public ArrayList<Server> updateActiveServers(){
-		//returns a list of servers in use
-		activeServers.add(targetServer);
-		return activeServers;
-	}
-	
 	public void write(String n) {
 		messenger.message(n);
 	}
@@ -32,9 +28,33 @@ public abstract class Scheduler {
 		str = messenger.read();
 	}
 	
+	public void sendSchedule() {
+		write("OK");
+		waitFor(".");
+		write("SCHD " + job.getID() + " " + targetServer.getServerType() + " " + targetServer.getServerID());
+		waitFor("OK");
+		write("REDY");
+	}
+	
 	public void waitFor(String n) {
 		messenger.waitFor(n);
 	}
 	
-	public abstract void schedule(String j);
+	public void getServerInfo() {
+		//str = messenger.getCurrentLine();
+		write("GETS Capable " + job.getCores() + " " + job.getDisk() + " " + job.getMemory());
+		read();
+		String[] serverStr = str.split(" ",3);
+		numberOfServers = Integer.valueOf(serverStr[1]);
+		write("OK");
+	}
+	
+	public void schedule(String j) {
+		job = new Job(j);
+		getServerInfo();
+		findServer(numberOfServers);
+		sendSchedule();
+	}
+	
+	public abstract void findServer(int numberOfServers);
 }
