@@ -8,18 +8,19 @@ Instructions for Client
 
 Compiled Client can be run using the following command:
 
-java Client
+java -jar Client -a [algorithm]
 
-Additionally, an algorithm for scheduling can be selected by running the following:
+An algorithm for scheduling must be selected, where algorithm is one of the following:
 
-java Client -a algorithm
+stage2, lrr, fc, ff
 
-where algorithm is one of the following:
-
-lrr, fc, new
-
+stage2 is the algorithm designed for Stage 2 of the Assignment
 lrr is the Largest Round Robin scheduling algorithm
 fc is the First Capable scheduling algorithm
-new is the designed algorithm for Stage 2 of the project
+ff is the First Fit scheduling algorithm
 
-e.g. java Client -a new will run the scheduler using the designed algorithm for Stage 2
+e.g.
+
+To run the scheduler using the algorithm designed for Stage 2 of the assignment ("stage2"), the following command is used:
+
+java -jar Client -a stage2

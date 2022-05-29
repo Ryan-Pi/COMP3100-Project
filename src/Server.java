@@ -1,3 +1,7 @@
+//This class contains information about a server,
+//most importantly its type, ID, status, cores, memory and disk
+//It has getters and setters for the above information as well
+//getters will default to returning String values unless they have Int in the name e.g. getServerCoresInt()
 
 public class Server {
 	private String type;
@@ -10,6 +14,8 @@ public class Server {
 	private String waiting;
 	private String running;
 	
+	//constructor used for all responses from
+	//ds-server regarding server information
 	public Server(String server) {
 		String temp[] = server.split(" ",9);
 		type = temp[0];
@@ -19,7 +25,9 @@ public class Server {
 		cores = temp[4];
 		memory = temp[5];
 		disk = temp[6];
+		//number of jobs waiting on server
 		waiting = temp[7];
+		//number of jobs running on server
 		running = temp[8];
 	}
 	
@@ -79,22 +87,40 @@ public class Server {
 		return Integer.valueOf(running);
 	}
 	
-	public void modifyServerByAddingJob(Job j) {
-		cores = Integer.toString(Integer.valueOf(cores) - j.getCoresInt());
-		memory = Integer.toString(Integer.valueOf(memory) - j.getMemoryInt());
-		disk = Integer.toString(Integer.valueOf(disk) - j.getDiskInt());
-		if(Integer.valueOf(cores)<0) {
-			waiting = Integer.toString(Integer.valueOf(waiting) + 1);
-		} else {
-			running = Integer.toString(Integer.valueOf(running) + 1);
-		}
+	public void setServerType(String s) {
+		type = s;
 	}
 	
-	public void modifyServerByRemovingJob(Job j) {
-		cores = Integer.toString(Integer.valueOf(cores) + j.getCoresInt());
-		memory = Integer.toString(Integer.valueOf(memory) + j.getMemoryInt());
-		disk = Integer.toString(Integer.valueOf(disk) + j.getDiskInt());
-		waiting = Integer.toString(Integer.valueOf(waiting) - 1);
+	public void setServerID(String s) {
+		id = s;
+	}
+	
+	public void setServerStatus(String s) {
+		status = s;
+	}
+
+	public void setServerCurrentStartTime(String s) {
+		currentStartTime = s;
+	}
+
+	public void setServerCores(String s) {
+		cores = s;
+	}
+
+	public void setServerMemory(String s) {
+		memory = s;
+	}
+	
+	public void setServerDisk(String s) {
+		disk = s;
+	}
+	
+	public void setServerWaitingJobs(String s) {
+		waiting = s;
+	}
+	
+	public void setServerRunningJobs(String s) {
+		running = s;
 	}
 
 }

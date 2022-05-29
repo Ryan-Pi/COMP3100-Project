@@ -1,23 +1,16 @@
-import java.util.ArrayList;
 
 public abstract class Scheduler {
+	//This is an abstract class which all scheduling classes are based on
+	//contains methods that are common to all scheduling subclasses
 	
-	ArrayList<String> serverTypes;
 	Job job;
 	Server targetServer;
 	Messenger messenger;
 	String str;
 	int numberOfServers;
 	
-	//maybe have schedule() use abstract functions and have subclassses provide functions
-	
 	public Scheduler(Messenger messengerClient) {
 		this.messenger = messengerClient;
-	}
-	
-	public void updateServerTypes(ArrayList<String> serverTypeList) {
-		//this should only be called at the start of the client to get list of server types
-		serverTypes = serverTypeList;
 	}
 	
 	public void write(String n) {
@@ -28,10 +21,10 @@ public abstract class Scheduler {
 		str = messenger.read();
 	}
 	
+	//sends schedule decision to ds-server
 	public void sendSchedule() {
 		write("OK");
 		waitFor(".");
-//		System.out.println("Scheduling " + job.getID() + "to " + targetServer.getServerType() + " " + targetServer.getServerID());
 		write("SCHD " + job.getID() + " " + targetServer.getServerType() + " " + targetServer.getServerID());
 		waitFor("OK");
 		write("REDY");
@@ -42,8 +35,10 @@ public abstract class Scheduler {
 		str = messenger.getCurrentLine();
 	}
 	
+	//retrieves capable servers from ds-server
+	//is sometimes overridden if want available servers in initial
+	//request instead
 	public void getServerInfo() {
-		//str = messenger.getCurrentLine();
 		write("GETS Capable " + job.getCores() + " " + job.getMemory() + " " + job.getDisk());
 		read();
 		String[] serverStr = str.split(" ",3);
@@ -51,6 +46,8 @@ public abstract class Scheduler {
 		write("OK");
 	}
 	
+	//schedule a job by providing a string as input
+	//used for JOBN
 	public void schedule(String j) {
 		job = new Job(j);
 		getServerInfo();
@@ -58,9 +55,23 @@ public abstract class Scheduler {
 		sendSchedule();
 	}
 	
+	//schedule a job by proving a job as input
+	//used for any case where a job object has already
+	//been created
+	public void schedule(Job j) {
+		job = j;
+		getServerInfo();
+		findServer(numberOfServers);
+		sendSchedule();
+	}
+	
+	//abstract method filled out by subclasses
 	public abstract void findServer(int numberOfServers);
 	
 	public void migrate() {
-		
+		//this code is overridden in a subclass if a scheduling algorithm
+		//implements migration of jobs
+		//otherwise, it simply tells ds-server "REDY"
+		write("REDY");
 	}
 }

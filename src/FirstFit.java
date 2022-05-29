@@ -1,9 +1,12 @@
 import java.util.ArrayList;
 
-public class ff extends Scheduler{
+public class FirstFit extends Scheduler{
 	//modified first fit
+	//this algorithm approximates the ds-client first fit algorithm
+	//but is slightly different, and was written to understand how
+	//a first fit algorithm would be written
 	
-	public ff(Messenger messenger) {
+	public FirstFit(Messenger messenger) {
 		super(messenger);
 	}
 	
@@ -52,33 +55,5 @@ public class ff extends Scheduler{
 			}
 		}
 	}
-	
-//	public void findServer(int numberOfServers) {
-//		boolean serverChanged = false;
-//		ArrayList<Server> capableServers = new ArrayList<Server>();
-//		for(int i = 0; i < numberOfServers; i++) {
-//			read();
-//			Server server = new Server(str);
-//			capableServers.add(server);
-//		}
-//		for(int i = 0; i < capableServers.size(); i++) {
-//			Server server = capableServers.get(i);
-//			int cores = server.getServerCoresInt();
-//			if(job.getCoresInt()<=cores) {
-//				targetServer = server;
-//				serverChanged = true;
-//				break;
-//			}
-//		}
-//		if(serverChanged == false) {
-//			for(int i = 0; i < capableServers.size();i++) {
-//				Server server = capableServers.get(i);
-//				if(!server.getServerStatus().equals("inactive")) {
-//						targetServer = capableServers.get(i);
-//						break;
-//				}
-//			}
-//		}
-//	}
 	
 }

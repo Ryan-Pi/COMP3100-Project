@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 
-public class lrr extends Scheduler{
+public class LargestRoundRobin extends Scheduler{
+	//Large Round Robin scheduling algorithm
 	
 	ArrayList<Server> capableServers = new ArrayList<Server>();
 	ArrayList<Server> largestServers = new ArrayList<Server>();
@@ -8,7 +9,7 @@ public class lrr extends Scheduler{
 	boolean foundLargest = false;
 	int idx = 0;
 	
-	public lrr(Messenger messenger) {
+	public LargestRoundRobin(Messenger messenger) {
 		super(messenger);
 	}
 	

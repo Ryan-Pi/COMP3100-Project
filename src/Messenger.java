@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-//this class contains methods for writing to output stream
+//this class contains methods for writing to output stream and reading from input stream,
+//this class is responsible for all communication functions between
+//the client and ds-server
 public class Messenger {
 	BufferedReader in;
 	DataOutputStream dout;
@@ -39,9 +41,8 @@ public class Messenger {
 	}
 	
 	public void waitFor(String n) {
-		//clears string, as otherwise the client may send another message too quickly due to 
-		//having OK in str while waiting for another OK message
-		//mainly created to ensure that the initial handshake between client and server occurs properly
+		//clears string, as otherwise the client may send another message too quickly
+		//and cause communications to stop between ds-server and the scheduler
 		while(!str.equals(n)) {
 			str = read();
 		}

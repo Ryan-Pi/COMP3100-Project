@@ -1,7 +1,8 @@
 
-public class fc extends Scheduler{
+public class FirstCapable extends Scheduler{
+	//first capable algorithm
 	
-	public fc(Messenger messenger) {
+	public FirstCapable(Messenger messenger) {
 		super(messenger);
 	}
 	
