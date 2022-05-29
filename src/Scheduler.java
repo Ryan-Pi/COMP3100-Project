@@ -31,6 +31,7 @@ public abstract class Scheduler {
 	public void sendSchedule() {
 		write("OK");
 		waitFor(".");
+		System.out.println("Scheduling " + job.getID() + "to " + targetServer.getServerType() + " " + targetServer.getServerID());
 		write("SCHD " + job.getID() + " " + targetServer.getServerType() + " " + targetServer.getServerID());
 		waitFor("OK");
 		write("REDY");
@@ -42,7 +43,7 @@ public abstract class Scheduler {
 	
 	public void getServerInfo() {
 		//str = messenger.getCurrentLine();
-		write("GETS Capable " + job.getCores() + " " + job.getDisk() + " " + job.getMemory());
+		write("GETS Capable " + job.getCores() + " " + job.getMemory() + " " + job.getDisk());
 		read();
 		String[] serverStr = str.split(" ",3);
 		numberOfServers = Integer.valueOf(serverStr[1]);

@@ -10,7 +10,7 @@ public class Job {
 	String serverType;
 	String serverID;
 	
-	public Job(int jobId, int jobCores, int jobDisk, int jobMemory, String type, String sid) {
+	public Job(int jobId, int jobCores, int jobMemory, int jobDisk, String type, String sid) {
 		id = jobId;
 		cores = jobCores;
 		disk = jobDisk;
@@ -24,8 +24,8 @@ public class Job {
 		//jobStr[2] = jobid, str[4],[5],[6] = cores, disk, memory
 		id = Integer.valueOf(jobStr[2]);
 		cores = Integer.valueOf(jobStr[4]);
-		disk = Integer.valueOf(jobStr[5]);
-		memory = Integer.valueOf(jobStr[6]);
+		memory = Integer.valueOf(jobStr[5]);
+		disk = Integer.valueOf(jobStr[6]);
 	}
 	
 	public String getID() {
