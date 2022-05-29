@@ -6,9 +6,11 @@ Student Number: 46502068
 
 Instructions for Client
 
+Ensure all class files are in the same directory where the command to run it is executed.
+
 Compiled Client can be run using the following command:
 
-java -jar Client -a [algorithm]
+java Client -a [algorithm]
 
 An algorithm for scheduling must be selected, where algorithm is one of the following:
 
@@ -23,4 +25,4 @@ e.g.
 
 To run the scheduler using the algorithm designed for Stage 2 of the assignment ("stage2"), the following command is used:
 
-java -jar Client -a stage2
+java Client -a stage2
