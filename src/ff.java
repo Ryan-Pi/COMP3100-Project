@@ -30,7 +30,7 @@ public class ff extends Scheduler{
 			targetServer = availableServers.get(0);
 		} else {
 			//find a server capable of running the job
-			write("GETS Capable " + job.getCores() + " " + job.getDisk() + " " + job.getMemory());
+			write("GETS Capable " + job.getCores() + " " + job.getMemory() + " " + job.getDisk());
 			read();
 			String[] serverStr = str.split(" ",3);
 			int serverNo = Integer.valueOf(serverStr[1]);
