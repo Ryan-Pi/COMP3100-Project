@@ -8,13 +8,15 @@ public class Job {
 	int disk;
 	int memory;
 	String serverType;
-	int serverID;
+	String serverID;
 	
-	public Job(int jobId, int jobCores, int jobDisk, int jobMemory) {
+	public Job(int jobId, int jobCores, int jobDisk, int jobMemory, String type, String sid) {
 		id = jobId;
 		cores = jobCores;
 		disk = jobDisk;
 		memory = jobMemory;
+		serverType = type;
+		serverID = sid;
 	}
 	
 	public Job(String n) {

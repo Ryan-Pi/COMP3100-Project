@@ -1,52 +1,73 @@
 import java.util.ArrayList;
 
 public class newAlgo extends Scheduler{
-	//first fit
-	// but uses worst fit scheduling if servers have running jobs
+	//improved first fit algorithm,
+	//with added migration which attempts to do best fit?
+	//where if all available servers are on (active or idle)
+	//it will attempt to use worst fit
 	ArrayList<Server> activeServers = new ArrayList<Server>();
-	ArrayList<Server> capableServers = new ArrayList<Server>();
 	boolean first = true;
 	
 	public newAlgo(Messenger messenger) {
 		super(messenger);
 	}
 	
-	public void findServer(int serverNo) {
-		int fit = 999;
-		for(int i = 0; i < serverNo; i++) {
-			read();
-			Server server = new Server(str);
-			capableServers.add(server);
-		}
-		for(int i = 0; i < serverNo; i++) {
-			for(int j = 0; j < activeServers.size(); j++) {
-				if(capableServers.get(i).getServerType().equals(activeServers.get(j).getServerType())){
-					if(capableServers.get(i).getServerID().equals(activeServers.get(j).getServerType())) {
-						if(capableServers.get(i).getServerWaitingJobsInt()==0) {
-							Server server = capableServers.get(i);
-							int cores = server.getServerCoresInt();
-							int memory = server.getServerMemoryInt();
-							int disk = server.getServerDiskInt();
-							if(job.getCoresInt()<=cores && job.getDiskInt()<=disk && job.getMemoryInt()<=memory) {
-								targetServer = server;
-								break;
-							}
-						}
-					}
-				}
-			}
-		}
-		if(first) {
-			targetServer = capableServers.get(capableServers.size()-1);
-			first = false;
-		}
-		//targetServer = XXX;
-		updateActiveServers();
+	@Override
+	public void getServerInfo() {				
+		write("GETS Available " + job.getCores() + " " + job.getDisk() + " " + job.getMemory());
+		read();
+		String[] serverStr = str.split(" ",3);
+		numberOfServers = Integer.valueOf(serverStr[1]);			
+		write("OK");
 	}
 	
-	public ArrayList<Server> updateActiveServers(){
-		//returns a list of servers in use
-		activeServers.add(targetServer);
-		return activeServers;
+	public void findServer(int numberOfServers) {
+//		boolean allOn = true;
+		ArrayList<Server> availableServers = new ArrayList<Server>();
+		//request all servers with resources currently available to execute the job
+		for(int i = 0; i < numberOfServers; i++) {
+			read();
+			Server server = new Server(str);
+			availableServers.add(server);
+//			if(server.getServerStatus().equals("inactive")) {
+//				allOn = false;
+//			}
+		}
+		//if there are available servers, schedule to the first such server
+		if(availableServers.size()>0) {
+			targetServer = availableServers.get(0);
+		} else {
+			//find a server capable of running the job
+			write("GETS Capable " + job.getCores() + " " + job.getDisk() + " " + job.getMemory());
+			read();
+			String[] serverStr = str.split(" ",3);
+			int serverNo = Integer.valueOf(serverStr[1]);
+			write("OK");
+			ArrayList<Server> capableServers = new ArrayList<Server>();
+			for(int i = 0; i < serverNo; i++) {
+				read();
+				Server server = new Server(str);
+				capableServers.add(server);
+			}
+			write("OK");
+			waitFor(".");
+			//look for server that has the lowest estimated wait time
+			int waitTime = 99999999;
+			for(int i = 0; i < capableServers.size();i++) {
+				Server server = capableServers.get(i);
+				write("EJWT " + server.getServerType() + " " + server.getServerID());
+				read();
+				int time = Integer.valueOf(str);
+				if(time<waitTime) {
+					targetServer = server;
+				}
+				write("OK");
+			}
+		}
+	}
+	
+	@Override
+	public void migrate() {
+		
 	}
 }
