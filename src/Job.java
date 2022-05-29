@@ -7,6 +7,8 @@ public class Job {
 	int cores;
 	int disk;
 	int memory;
+	String serverType;
+	int serverID;
 	
 	public Job(int jobId, int jobCores, int jobDisk, int jobMemory) {
 		id = jobId;
@@ -66,6 +68,10 @@ public class Job {
 
 	public void setMemory(int newMemory) {
 		memory = newMemory;
+	}
+	
+	public String getMigrationInfo() {
+		return Integer.toString(id) + " " + serverType + " " + serverID;
 	}
 	
 }

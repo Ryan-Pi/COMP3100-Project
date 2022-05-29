@@ -29,6 +29,7 @@ public abstract class Scheduler {
 	}
 	
 	public void sendSchedule() {
+		System.out.println("Sending Schedule!");
 		write("OK");
 		waitFor(".");
 		write("SCHD " + job.getID() + " " + targetServer.getServerType() + " " + targetServer.getServerID());
@@ -57,4 +58,8 @@ public abstract class Scheduler {
 	}
 	
 	public abstract void findServer(int numberOfServers);
+	
+	public void migrate() {
+		
+	}
 }

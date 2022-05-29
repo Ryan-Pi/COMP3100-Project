@@ -49,5 +49,4 @@ public class newAlgo extends Scheduler{
 		activeServers.add(targetServer);
 		return activeServers;
 	}
-
 }

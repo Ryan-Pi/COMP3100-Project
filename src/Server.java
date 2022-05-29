@@ -78,5 +78,23 @@ public class Server {
 	public int getServerRunningJobsInt() {
 		return Integer.valueOf(running);
 	}
+	
+	public void modifyServerByAddingJob(Job j) {
+		cores = Integer.toString(Integer.valueOf(cores) - j.getCoresInt());
+		memory = Integer.toString(Integer.valueOf(memory) - j.getMemoryInt());
+		disk = Integer.toString(Integer.valueOf(disk) - j.getDiskInt());
+		if(Integer.valueOf(cores)<0) {
+			waiting = Integer.toString(Integer.valueOf(waiting) + 1);
+		} else {
+			running = Integer.toString(Integer.valueOf(running) + 1);
+		}
+	}
+	
+	public void modifyServerByRemovingJob(Job j) {
+		cores = Integer.toString(Integer.valueOf(cores) + j.getCoresInt());
+		memory = Integer.toString(Integer.valueOf(memory) + j.getMemoryInt());
+		disk = Integer.toString(Integer.valueOf(disk) + j.getDiskInt());
+		waiting = Integer.toString(Integer.valueOf(waiting) - 1);
+	}
 
 }

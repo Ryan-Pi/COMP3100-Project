@@ -10,6 +10,7 @@ public class Client {
 	DataOutputStream dout;
 	Messenger messenger;
 	Scheduler scheduler;
+	String algo;
 	String str = new String();
 //	String serverType = new String();
 //	boolean first = true;
@@ -20,12 +21,15 @@ public class Client {
 		try {
 			client = new Socket("localhost",port);
 			messenger = new Messenger(client);
+			algo = algorithm;
 			if(algorithm.equals("new")){
 				scheduler = new newAlgo(messenger);
 			}else if(algorithm.equals("fc")) {
 				scheduler = new fc(messenger);
 			}else if(algorithm.equals("ff")) {
 				scheduler = new ff(messenger);
+			}else if(algorithm.equals("ffNew")) {
+				scheduler = new ffNew(messenger);
 			} else {
 				scheduler = new lrr(messenger);
 			}
@@ -119,21 +123,21 @@ public class Client {
 //		}
 //	}
 	
-	public void message(String algorithm) {
-		try {
-			while(!str.equals("NONE")) {
-				if(str.contains("JOBN")) {
-					schedule(str);
-				}
-				if(str.contains("JCPL")){
-					write("REDY");
-				}
-				str = in.readLine();
-			}	
-		} catch(Exception e) {
-			e.printStackTrace();
-		}	
-	}
+//	public void message(String algorithm) {
+//		try {
+//			while(!str.equals("NONE")) {
+//				if(str.contains("JOBN")) {
+//					schedule(str);
+//				}
+//				if(str.contains("JCPL")){
+//					write("REDY");
+//				}
+//				str = in.readLine();
+//			}	
+//		} catch(Exception e) {
+//			e.printStackTrace();
+//		}	
+//	}
 	
 	public void schedule(String j) {
 		scheduler.schedule(j);
@@ -146,6 +150,7 @@ public class Client {
 				scheduler.schedule(str);
 			}
 			if(str.contains("JCPL")) {
+				scheduler.migrate();
 				write("REDY");
 			}
 			str = read();
@@ -191,8 +196,10 @@ public class Client {
 		algoList.add("fc");
 		algoList.add("ff");
 		algoList.add("new");
-		//change this to be within Client and to accept all strings but
-		//default to lrr, and print a line to notify
+		algoList.add("ffNew");
+		//checks if specified algorithm to run is implemented
+		//if not, then exits program
+		//notifies user if program exits or if it is running using specified algorithm
 		if(args[0].equals("-a")) {
 			algorithm = args[1];
 			if(algoList.contains(algorithm)==false) {
